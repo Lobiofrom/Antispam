@@ -16,7 +16,9 @@ import androidx.annotation.RequiresApi
 class CustomCallScreeningService : CallScreeningService() {
 
     private val blackList = listOf(
-        "6505551212"
+        "6505551212",
+        "79205565609",
+        "79166849592"
     )
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -31,6 +33,7 @@ class CustomCallScreeningService : CallScreeningService() {
                 when (state) {
                     TelephonyManager.CALL_STATE_IDLE -> {
                         Log.d("CALL_STATE_IDLE-1", "CALL_STATE_IDLE")
+
                     }
 
                     TelephonyManager.CALL_STATE_OFFHOOK -> {
@@ -69,11 +72,12 @@ class CustomCallScreeningService : CallScreeningService() {
     override fun onScreenCall(details: Call.Details) {
         if (details.callDirection == Call.Details.DIRECTION_INCOMING) {
             details.handle?.schemeSpecificPart?.let { phoneNumber ->
-                Log.d("phoneNumber", "phoneNumber======$phoneNumber")
-                if (phoneNumber.isNotEmpty()) {
-                    showCallAlertDialog(phoneNumber, blackList)
-                    respondToCall(details, CallResponse.Builder().build())
-                }
+                val noPlus = phoneNumber.replace("+", "")
+                Log.d("phoneNumber", "phoneNumber======$noPlus")
+                //if (phoneNumber.isNotEmpty()) {
+                showCallAlertDialog(noPlus, blackList)
+                respondToCall(details, CallResponse.Builder().build())
+                //}
             }
         }
     }
